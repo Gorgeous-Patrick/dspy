@@ -149,6 +149,7 @@ class OllamaLocal(LM):
         if os.path.exists(response_path):
             with open(response_path, "r") as file:
                 requests = json.load(file)
+        requests.append(request_info)
         with open("/tmp/RawResponse.json", "w") as file:
             json.dump(requests, file)
 
