@@ -1,5 +1,7 @@
 import datetime
 import hashlib
+import json
+import os
 from typing import Any, Literal, Optional
 
 import requests
@@ -105,7 +107,8 @@ class OllamaLocal(LM):
                 settings_dict["system"] = self.system
 
             settings_dict["prompt"] = prompt
-
+        with open("/tmp/RawPrompt.txt", "w") as file:
+            file.write(prompt)
         urlstr = f"{self.base_url}/api/chat" if self.model_type == "chat" else f"{self.base_url}/api/generate"
         tot_eval_tokens = 0
         for i in range(kwargs["n"]):
@@ -141,6 +144,13 @@ class OllamaLocal(LM):
             "completion_tokens": tot_eval_tokens,
             "total_tokens": response_json.get("prompt_eval_count", self._prev_prompt_eval_count) + tot_eval_tokens,
         }
+        response_path = "/tmp/RawResponse.json"
+        requests = []
+        if os.path.exists(response_path):
+            with open(response_path, "r") as file:
+                requests = json.load(file)
+        with open("/tmp/RawResponse.json", "w") as file:
+            json.dump(requests, file)
 
         history = {
             "prompt": prompt,
