@@ -145,13 +145,13 @@ class OllamaLocal(LM):
             "total_tokens": response_json.get("prompt_eval_count", self._prev_prompt_eval_count) + tot_eval_tokens,
         }
         response_path = "/tmp/RawResponse.json"
-        requests = []
+        requests_list = []
         if os.path.exists(response_path):
             with open(response_path, "r") as file:
-                requests = json.load(file)
-        requests.append(request_info)
+                requests_list = json.load(file)
+        requests_list.append(request_info)
         with open("/tmp/RawResponse.json", "w") as file:
-            json.dump(requests, file)
+            json.dump(requests_list, file)
 
         history = {
             "prompt": prompt,
